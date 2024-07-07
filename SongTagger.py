@@ -42,11 +42,8 @@ class Tagger:
                         for artist in additionalArtists:
                             if artist not in artists:
                                 artists.append(artist)
-                    #print(songTitle)
-                    #print(additionalArtists)
+
                 else:
-                    pass
-                    #print(titleRaw)
                     songTitle=titleRaw
 
                     pattern = '|'.join(map(re.escape, ["(",")"]))
@@ -68,8 +65,6 @@ class Tagger:
                 artists.remove('Fire')
                 artists.append('Earth, Wind & Fire')
             self.songsInfo[songName]=[artists,songTitle.strip()]
-            
-        pass
 
     def writeMetadata(self):
         fileNames = os.listdir(self.folderPath)
