@@ -31,13 +31,16 @@ class Tagger:
                     titleRaw= re.split(pattern, titleRaw)[0]
 
             if "(" in titleRaw:
-                if "ft" in titleRaw:
+                if "ft." in titleRaw:
                     pattern = '|'.join(map(re.escape, ["(",")"]))
                     featuresString= re.split(pattern, titleRaw)
                     additionalArtists = featuresString[1]
-                    pattern = '|'.join(map(re.escape, ["ft.",",","Remix", "&", "Edit", "Acoustic","Flip"])) # check what should happen if its both a ft and a remix/edit
+                    pattern = '|'.join(map(re.escape, ["ft.",",","Remix", "&", "Edit", "Acoustic","Flip", "Mashup"])) # check what should happen if its both a ft and a remix/edit
                     additionalArtists = [elem.strip() for elem in re.split(pattern, additionalArtists) if elem]
-                    songTitle= featuresString[0]
+                    if "Edit" in titleRaw or 'Flip' in titleRaw or 'Remix' in titleRaw:
+                        songTitle=titleRaw
+                    else:
+                        songTitle= featuresString[0]
                     if(len(additionalArtists)):
                         for artist in additionalArtists:
                             if artist not in artists:
@@ -51,7 +54,7 @@ class Tagger:
                     additionalArtists = featuresString[1]
                     pattern = '|'.join(map(re.escape, ["ft.",",","Remix", "&", "Edit", "Bootleg" , "Mashup", "Cover", "Nightcore", "Acoustic","Flip"])) # check what should happen if its both a ft and a remix/edit
                     additionalArtists = [elem.strip() for elem in re.split(pattern, additionalArtists) if elem]
-                    songTitle= featuresString[0]
+                    songTitle= titleRaw
                     if(len(additionalArtists)):
                         for artist in additionalArtists:
                             if artist not in artists:
@@ -74,9 +77,8 @@ class Tagger:
             if songFile.tag is None:
                 songFile.initTag()
 
-            songFile.tag.artist = ', '.join(self.songsInfo[songName][0])
+            songFile.tag.artist = '; '.join(self.songsInfo[songName][0])
             songFile.tag.title = self.songsInfo[songName][1]
-            
             songFile.tag.save()
             
             self.files[songName]= {'artists':[], 'songTitle':[], 'album':[]}
